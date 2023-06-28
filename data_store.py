@@ -1,14 +1,12 @@
 # импорты
 import sqlalchemy as sq
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, Session
 from sqlalchemy import create_engine, MetaData
-from sqlalchemy.orm import Session
 
 from config import db_url_object
 
 metadata = MetaData()
 Base = declarative_base()
-
 engine = create_engine(db_url_object)
 
 class Viewed(Base):
@@ -16,11 +14,13 @@ class Viewed(Base):
     profile_id = sq.Column(sq.Integer, primary_key=True)
     worksheet_id = sq.Column(sq.Integer, primary_key=True)
 
+
 def add_user(engine, profile_id, worksheet_id):
     with Session(engine) as session:
         to_bd = Viewed(profile_id=profile_id, worksheet_id=worksheet_id)
         session.add(to_bd)
         session.commit()
+
 
 def check_user(engine, profile_id, worksheet_id):
     with Session(engine) as session:
@@ -32,6 +32,7 @@ def check_user(engine, profile_id, worksheet_id):
 
 
 if __name__ == '__main__':
+    engine = create_engine(db_url_object)
     Base.metadata.create_all(engine)
-    res = check_user(engine, 2113, 1245121)
+    res = check_user(engine, 1, 2)
     print(res)
